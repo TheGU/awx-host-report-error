@@ -25,7 +25,8 @@ from typing import Any, Iterator
 from urllib.parse import urljoin, urlparse
 
 import requests
-
+from dotenv import load_dotenv
+load_dotenv(override=True, verbose=True)
 FAILURE_EVENTS = "runner_on_failed,runner_on_unreachable,runner_on_async_failed"
 PAGE_SIZE = 200
 CSV_COLUMNS = ["play", "host", "status", "task", "message"]
@@ -228,7 +229,7 @@ def main() -> int:
     base_url = args.url or os.environ.get("AWX_URL", "")
     token = args.token or os.environ.get("AWX_TOKEN", "")
 
-    if args.insecure:
+    if args.insecure or os.environ.get("AWX_INSECURE", "").lower() == "true":
         verify: str | bool = False
         # Silence the single warning per run — user opted in.
         from urllib3.exceptions import InsecureRequestWarning
